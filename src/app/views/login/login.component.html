@@ -1,0 +1,24 @@
+<div class="min-h-screen bg-white flex justify-center items-center text-center">
+	<div class="px-12">
+    <img src="https://saman.lafortuna.com.co/assets/img/brand/logo.png" alt="SAMAN BRAND">
+    
+    <h1 class="text-3xl font-bold mb-1 cursor-pointer">Iniciar sesión</h1>
+    <p class="text-sm mb-8 font-semibold text-gray-700 tracking-wide cursor-pointer">Ingresa tus credenciales para continuar</p>
+
+    <div class="w-screen">
+      <pre>{{error | json}}</pre>
+    </div>
+
+    <form [formGroup]="credenciales" class="space-y-4" (submit)="login()">
+      <input formControlName="email" type="email" placeholder="Usuario" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+      <input formControlName="password" type="password" placeholder="Contraseña" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none"/>
+      <div *ngIf="message" class="rounded text-red-500 border border-red-500 bg-red-50 p-2">
+        <p><span class="cil-warning mr-1"></span>  {{message}}</p>
+      </div>
+      <div class="text-center mt-6">
+        <button type="submit" class="py-2 w-64 text-lg text-white bg-green-600 rounded-2xl">Ingresar</button>
+        <p class="mt-4 text-sm">¿No tienes una cuenta? Solicítala al correo: <span class="underline cursor-pointer">coordinadordeaplicaciones@acertemos.com</span></p>
+      </div>
+    </form>
+	</div>
+</div>

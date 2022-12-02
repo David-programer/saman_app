@@ -1,0 +1,13 @@
+{
+  "name": "SAMAN",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://200.110.168.155:90/api"
+    }
+  ]
+}
