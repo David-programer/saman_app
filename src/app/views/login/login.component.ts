@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
 
   constructor(private router:Router, private _globalService: GlobalService, private alertController: AlertController) { }
 
-  public error:any
   public message:string = '';
   public credenciales = new FormGroup({
     email: new FormControl('', Validators.required),
@@ -31,11 +30,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('identity', JSON.stringify(res.usuario));
         this.router.navigate(['home']);
       },
-      error: async (e)=>{
-        // e.error.message
-        this.error = e;
-        
-        await this.open_alert('No funcionó');
+      error: async (e)=>{        
+        await this.open_alert(e.error.message);
       }
     })
   }
@@ -61,13 +57,13 @@ export class LoginComponent implements OnInit {
       })
     }
 
-    this._globalService.getRequestPublic('https://pokeapi.co/api/v2/pokemon/ditto').subscribe({
-      next: (res)=>{
-        this.error = res
-      },
-      error: (error)=>{
-        this.error = error;
-      }
-    })
+    // this._globalService.getRequestPublic('https://saman.lafortuna.com.co:4433/api/powerbi/listapuntosventasJSON').subscribe({
+    //   next: (res)=>{
+    //     this.error = res
+    //   },
+    //   error: (error)=>{
+    //     this.error = error;
+    //   }
+    // })
   }
 }

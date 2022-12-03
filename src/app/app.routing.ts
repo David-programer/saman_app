@@ -11,6 +11,8 @@ import { LoginComponent } from './views/login/login.component';
 
 //Identity validation
 import { IdentityGuard } from './services/identity.guard';
+import { MonitoreoChanceComponent } from './views/monitoreo-chance/monitoreo-chance.component';
+import { HomeComponent } from './views/home/home.component';
 
 // Components
 // import { DashboardComponent } from './views/dashboard/dashboard.component';
@@ -18,17 +20,16 @@ import { IdentityGuard } from './services/identity.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, data: { title: 'Login Page' } },
-//   { path: '500', component: P500Component, data: { title: 'Page 500' } },
+  // { path: '500', component: P500Component, data: { title: 'Page 500' } },
   // { path: 'login/:error', component: LoginComponent, data: { title: 'Login Page' } },
-  //   { path: 'logout/:sure', component: LoginComponent, data: { title: 'Logout Page' } },
-  //   { path: 'register', component: RegisterComponent, canActivate: [IdentityGuard], data: { title: 'Register Page' } },
-  { path: 'home', component: LayoutComponent, canActivate: [IdentityGuard], data: { title: '' }, 
-    children: [
-      // Módulo Lazy
-      // { path: 'dashboard', loadChildren: ()=> import('./views/dashboard/dashboard.component').then(module => module.DashboardComponent)},
+  // { path: 'logout/:sure', component: LoginComponent, data: { title: 'Logout Page' } },
+  // { path: 'register', component: RegisterComponent, canActivate: [IdentityGuard], data: { title: 'Register Page' } },
+  { path: '', component: LayoutComponent, canActivate: [IdentityGuard], data: { title: '' }, 
+  children: [
+    { path: 'monitoreo-linea', component: MonitoreoChanceComponent },
+    { path: 'home', component: HomeComponent },
       // { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' } },
-     ]
-  },
+  ]},
 //   { path: '**', component: P404Component },
 ];
 
