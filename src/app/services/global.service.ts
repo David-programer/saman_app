@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import {environment} from '../../environments/environment';
 
 @Injectable({
@@ -10,19 +10,21 @@ import {environment} from '../../environments/environment';
 
 export class GlobalService {
 
-    constructor(public _http: HttpClient){}
+    constructor(public _http: HTTP){
+      // this._http.setHeader(environment.url, 'Authorization', `Bearer ${ localStorage.getItem('token')}`);
+    }
 
     public user = new BehaviorSubject<any>({});
 
-    public postRequest(url:string, body:any){        
-        return this._http.post(`${environment.url}/api/${url}`, body, {headers: {Authorization: 'Bearer '  + localStorage.getItem('token')}})
+    public postRequest(url:string, data:any){        
+      return this._http.sendRequest(`${environment.url}/api/${url}`, { method: 'post', responseType: 'json', data })
     }
 
     public getRequest(url:string){
-      return this._http.get(`${environment.url}/api/${url}`, {headers: {Authorization: 'Bearer '  + localStorage.getItem('token')}})
+      return this._http.sendRequest(`${environment.url}/api/${url}`, {method: 'get', responseType: 'json', headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
     }
 
-    public  getRequestPublic (url:string){
-      return this._http.get(url);
+    public getRequestToken(url:string){
+      return this._http.sendRequest(`${environment.url}/api/${url}`, {method: 'get', headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
     }
 }

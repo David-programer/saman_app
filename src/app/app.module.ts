@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
+// import { HttpClientModule } from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -23,12 +24,12 @@ import { LayoutComponent } from './containers/layout/layout.component';
   imports: [
     FormsModule,
     BrowserModule,
-    HttpClientModule, 
+    // HttpClientModule,
     ReactiveFormsModule,
     IonicModule.forRoot(), 
     AppRoutingModule
   ],
-  providers: [IdentityGuard, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [HTTP, IdentityGuard, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

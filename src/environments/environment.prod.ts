@@ -1,4 +1,4 @@
 export const environment = {
-  url: 'https://saman.lafortuna.com.co:4433',
+  url: 'http://saman.lafortuna.com.co:89',
   production: true
 };

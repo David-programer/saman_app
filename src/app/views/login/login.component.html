@@ -6,11 +6,18 @@
     <p class="text-sm mb-8 font-semibold text-gray-700 tracking-wide cursor-pointer">Ingresa tus credenciales para continuar</p>
 
     <form [formGroup]="credenciales" class="space-y-4" (submit)="login()">
-      <input formControlName="email" type="email" placeholder="Usuario" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
-      <input formControlName="password" type="password" placeholder="Contraseña" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none"/>
+      
+      <input formControlName="email" type="email" placeholder="Usuario" class="shadow-sm block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+      
+      <div class="relative">
+        <input #input_password formControlName="password" type="password" placeholder="Contraseña" class="shadow-sm block text-sm py-3 px-4 rounded-lg w-full border outline-none"/>
+        <span (click)="input_password.type = input_password.type == 'password' ? 'text' : 'password'" [ngClass]="input_password.type == 'password' ? 'cil-low-vision' : 'cil-lock-locked'" class="text-xl cursor-pointer text-gray-600 absolute inset-y-3 right-0 pr-3 m-0"></span>
+      </div>
+
       <div *ngIf="message" class="rounded text-red-500 border border-red-500 bg-red-50 p-2">
         <p><span class="cil-warning mr-1"></span>  {{message}}</p>
       </div>
+
       <div class="text-center mt-6">
         <button type="submit" class="py-2 w-64 text-lg text-white bg-green-600 rounded-2xl">Ingresar</button>
         <p class="mt-4 text-sm">¿No tienes una cuenta? Solicítala al correo: <span class="underline cursor-pointer">coordinadordeaplicaciones@acertemos.com</span></p>

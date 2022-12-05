@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { GlobalService } from 'src/app/services/global.service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private router:Router, private _globalService: GlobalService, private alertController: AlertController) { }
 
+  public error:any;
   public message:string = '';
   public credenciales = new FormGroup({
     email: new FormControl('', Validators.required),
@@ -24,15 +26,13 @@ export class LoginComponent implements OnInit {
     if(this.credenciales.invalid){this.message = '¡Revisa tus datos!, hay campos incorrectos'; return }
 
     this.message = '';
-    this._globalService.postRequest('loginJson', this.credenciales.value).subscribe({
-      next: (res:any)=>{
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('identity', JSON.stringify(res.usuario));
-        this.router.navigate(['home']);
-      },
-      error: async (e)=>{        
-        await this.open_alert(e.error.message);
-      }
+    this._globalService.postRequest('loginJson', this.credenciales.value)
+    .then((res:any)=>{
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('identity', JSON.stringify(res.data.usuario));
+      this.router.navigate(['home']);
+    }).catch(async (e:any)=>{    
+      await this.open_alert(JSON.parse(e.error)?.message);
     })
   }
 
@@ -50,20 +50,10 @@ export class LoginComponent implements OnInit {
     let identity:any = localStorage.getItem('identity'), usuario = JSON.parse(identity), token = localStorage.getItem('token');
 
     if(usuario && token){
-      this._globalService.getRequest(`validaToken?id=${usuario.id}&token=${token}`).subscribe({
-        next: (res)=>{ 
-          if(res) this.router.navigate(['home']);
-        }
-      })
+      this._globalService.getRequestToken(`validaToken?id=${usuario.id}&token=${token}`)
+      .then(res =>{
+        if(Number(res.data) == 1) this.router.navigate(['home']); 
+      }).catch(error =>{ this.error = error })
     }
-
-    // this._globalService.getRequestPublic('https://saman.lafortuna.com.co:4433/api/powerbi/listapuntosventasJSON').subscribe({
-    //   next: (res)=>{
-    //     this.error = res
-    //   },
-    //   error: (error)=>{
-    //     this.error = error;
-    //   }
-    // })
   }
 }

@@ -7,7 +7,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "http://200.110.168.155:90/api"
+      "proxyUrl": "http://saman.lafortuna.com.co:89/api"
     }
   ]
 }
