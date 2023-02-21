@@ -1,0 +1,25 @@
+.modal{
+    animation: modal_animation_show .5s ease;
+}
+
+.modal_hidden{
+    animation: modal_animation_hidden .7s ease;
+}
+
+@keyframes modal_animation_show {
+    0%{
+        bottom: -100%;
+    }
+    100%{
+        bottom: 0;
+    }
+}
+
+@keyframes modal_animation_hidden {
+    0%{
+        bottom: 0;
+    }
+    100%{
+        bottom: -100%;
+    }
+}

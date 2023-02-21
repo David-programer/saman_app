@@ -1,3 +1,161 @@
-<p>
-  monitoreo-chance works!
-</p>
+<div class="overflow-y-auto h-screen pt-4">
+
+  <div class="px-4 my-2">
+    <h1 class="my-2 text-center text-xl font-medium"> <span class="cil-monitor mr-2"></span> Monitoreo en línea</h1>
+
+    <select class="w-full p-2 rounded-md">
+      <option  value="monitoreo-chance">Chance y doble chance</option>
+      <option  value="monitoreo-raspa">Raspa</option>
+      <option  value="monitoreo-chance">Baloto</option>
+    </select>
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="px-4 mb-2">
+    <input class="p-2 w-full rounded-xl bg-gray-100" type="search" placeholder="Buscar...">
+  </div>
+
+  <!-- OPCIONES -->
+  <div class="flex w-screen overflow-x-auto gap-2 py-2 px-4 text-sm">
+    <button class="whitespace-nowrap py-1 px-2 shadow-md rounded-md font-bold" (click)="modal_state = 'tipos'; modal = true">
+      Filtrar 
+      <svg class="inline" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+      </svg> 
+    </button>
+
+    <div class="whitespace-nowrap py-1 px-2 shadow-md rounded-md font-bold flex items-center" (click)="modal_state = 'nomenclatura'; modal = true"><span class="text-[#b0c2da] mr-2 cil-info"></span>Nomenclatura</div>
+    <div class="whitespace-nowrap py-1 px-2 shadow-md rounded-md font-bold"><span class="text-[#b0c2da] mr-2 cil-building"></span> {{ totales.pdvt | number:'1.0' }} PDVT</div>
+    <div class="whitespace-nowrap py-1 px-2 shadow-md rounded-md font-bold"><span class="text-[#b0c2da] mr-2 cil-clock"></span>{{hora_consulta}}</div>
+
+  </div>
+
+  <!-- FILTRAR POR ESTADO -->
+  <div class="flex w-screen overflow-x-auto gap-2 py-2 px-4">
+    <div *ngFor="let estado of estados" [ngClass]="{'opacity-50': estado.cantidad == 0}" class="p-1 flex border shadow-md rounded-3xl items-center" (click)="filter_by(estado.estado,estado.cantidad == 0, 'estado')">
+      <span class="text-white bg-{{colors[estado.estado]}} py-1 w-9 h-9 text-center rounded-full">{{estado.estado != 'A' && estado.estado != 'V' && estado.estado != 'R' ? estado.estado : ''}}</span>
+      <div class="mx-2">
+        <p class="m-0 font-medium">{{ estado.cantidad }}</p>
+        <p class="m-0 text-xs">{{ estado.porcentaje | number:'1.2-2'}}%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORMACIÓN DE LAS ZONAS -->
+  <div>
+    <div *ngFor="let zona of data | async" class="mt-4">
+      <hr>
+      <div class="px-4">
+        <div class="mt-2 flex gap-2 items-center">
+          <h3 class="font-bold text-xl ">{{zona.nom_zona}}</h3>
+          <span class="text-xs">({{zona.data.length}} / {{cantidad_x_zona[zona.nom_zona]}}) {{zona.data.length / cantidad_x_zona[zona.nom_zona] * 100 | number:'1.2-2'}}%</span>
+          <p class="text-xs">
+            <span class="cil-money mr-1"></span> {{rentabilidad_x_zona[zona.nom_zona] | currency:'$ ':'symbol':'1.0'}} <span class="cil-arrow-right mr-1"></span> {{rentabilidad_x_zona[zona.nom_zona] / totales.rentabilidad * 100 | number:'1.2-2'}}%
+          </p>
+        </div>
+  
+        <select class="w-full p-2 rounded-md" [(ngModel)]="municipios_selected[zona.nom_zona]" (change)="filter_by('', false, 'city')">
+          <option *ngFor="let municipio of municipios_x_zona[zona.nom_zona]" [value]="municipio">{{municipio}}</option>
+        </select>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2 justify-evenly px-2">
+        <div *ngFor="let item of zona.data" (click)="pdvt = item; modal_state = 'info_punto_venta'; modal = true" class="w-[87px] flex items-center gap-1 rounded-md p-1 border shadow-md text-{{colors[item.estado]}}">
+          <span class="text-white h-5 w-5 text-center rounded-md bg-{{colors[item.estado]}}">{{ item.estado != 'A' && item.estado != 'V' && item.estado != 'R' ? item.estado : '' }}</span>
+          <p>{{item.ide_sitioventa}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div *ngIf="modal" (click)="hidden_modal(modal_tipos)" class="w-screen h-screen absolute bg-black bg-opacity-60 top-0 left-0 flex">
+  <div [ngSwitch]="modal_state" #modal_tipos (click)="$event.stopPropagation()" class="bg-white w-screen rounded-t-2xl p-4 self-end modal relative max-h-96 overflow-y-auto">
+    <div *ngSwitchCase="'tipos'">
+      <h2 class="font-semibold text-2xl mb-2">Filtrar por tipos</h2>
+      <hr>
+      <div *ngFor="let option of tipos">
+        <div class="flex p-2 my-2">
+          <label style="width: 100%;" for="{{option.nombre}}"><span class="mr-2 cil-building text-yellow-600"></span>{{option.nombre}}: {{option.cantidad}}</label>
+          <input class="w-10" (change)="filter_by(option.nombre, option.cantidad == 0, 'tipo')" [checked]="option.cantidad != 0" id="{{option.nombre}}" name="{{option.nombre}}" type="checkbox">
+        </div>
+        <hr>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'info_punto_venta'">
+      <h4 class="font-semibold text-2xl">
+        <span class="text-white text-lg inline-block w-6 h-6 text-center rounded-md bg-{{colors[pdvt.estado]}}">{{ pdvt.estado != 'A' && pdvt.estado != 'V' && pdvt.estado != 'R' ? pdvt.estado : '' }}</span>
+        {{pdvt.ide_sitioventa}}
+      </h4>
+      <p class="mb-2">{{pdvt.nom_sitioventa}}</p>
+
+      <hr>
+
+      <div class="flex flex-col gap-1 mt-2">
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-institution"></span>Tipo: {{pdvt.nom_tipositioventa}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-factory"></span>Municipio: {{pdvt.nom_ciudad}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-building"></span>Oficina: {{pdvt.nom_oficina}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-calendar"></span>Fecha Creación: {{pdvt.fecha_creacion}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-clock"></span>Hora Ingreso: {{pdvt.hora_ingreso ?? 'Sin Ingreso'}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-media-play"></span>Primera Tx: {{pdvt.fecha_primera_tx ?? 'Sin Tx'}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-media-pause"></span>Última Tx: {{pdvt.fecha_ultima_tx ?? 'Sin TX'}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta Chance: {{pdvt.total_venta_chance}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta: {{pdvt.total_venta_doble}}</p>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'nomenclatura'">
+      <h2 class="font-semibold text-2xl mb-2 flex items-center"> <span class="cil-info mr-2"></span> Nomenclatura</h2>
+      <hr>
+      <div class="p-2 my-2 flex flex-col gap-3">
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-green-500"></span>
+          Verde - Ventas del día menor o igual a 2 horas
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-yellow-500"></span>
+          Amarillo - Ventas del día mayores a 2 horas
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-red-500"></span>
+          Rojo - Con loguin y sin ventas en el día
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-blue-500">G</span>
+          Azul - Ventas Giros y/o Recargas
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-black"></span>
+          Negro - Sin loguin y sin ventas en el día
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-black">X</span>
+          Negro X - Más de 1 mes sin ventas
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-black">N</span>
+          Negro N - Punto de Venta Nuevo
+        </p>
+        <hr>
+        <p class="flex items-center">
+          <span class="text-white h-7 w-7 inline-block text-center mr-2 rounded-md bg-black">5</span>
+          Negro + Numero - Cantidad (#) de días sin ventas
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-loading *ngIf="loading"></app-loading>
+
+<span class="bg-green-500 text-green-500 border-green-500"></span>
+<span class="bg-red-500 text-red-500 border-red-500"></span>
+<span class="bg-yellow-500 text-yellow-500 border-yellow-500"></span>

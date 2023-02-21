@@ -13,6 +13,7 @@ import { LoginComponent } from './views/login/login.component';
 import { IdentityGuard } from './services/identity.guard';
 import { MonitoreoChanceComponent } from './views/monitoreo-chance/monitoreo-chance.component';
 import { HomeComponent } from './views/home/home.component';
+import { ErrorComponent } from './components/error/error.component';
 
 // Components
 // import { DashboardComponent } from './views/dashboard/dashboard.component';
@@ -30,7 +31,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
       // { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' } },
   ]},
-//   { path: '**', component: P404Component },
+  { path: '**', component: ErrorComponent },
 ];
 
 @NgModule({

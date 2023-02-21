@@ -8,8 +8,8 @@
 	</header>
 
 	<!-- SIDEBAR -->
-	<aside [ngClass]="menuState ? 'ml-0' : 'ml-[-100%]'" class="absolute w-[17rem] transition-[margin] duration-[400ms]" aria-label="Sidebar">
-		<div class="px-3 py-4 overflow-y-auto bg-gray-800 h-screen text-gray-400">
+	<aside [ngClass]="menuState ? 'ml-0 bg-black bg-opacity-40' : 'ml-[-100%]'" (click)="menuState = false" class="w-full absolute transition-[margin] duration-[400ms]" aria-label="Sidebar">
+		<div (click)="$event.stopPropagation()" class="w-[17rem] px-3 py-4 overflow-y-auto bg-gray-800 h-screen text-gray-400">
 			<ul class="space-y-2 select-none">
 				<li *ngFor="let module of menu | async">
 					<button type="button" class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-700 hover:text-white" (click)="listItems.hidden = !listItems.hidden">
