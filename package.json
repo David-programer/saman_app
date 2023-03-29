@@ -39,6 +39,7 @@
     "ionicons": "^7.1.0",
     "rxjs": "^7.8.0",
     "tslib": "^2.5.0",
+    "typescript": "^4.9.5",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
@@ -77,8 +78,7 @@
     "ngx-tailwind": "^4.0.0",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.3.0",
-    "ts-node": "~10.9.1",
-    "typescript": "~5.0.2"
+    "ts-node": "~10.9.1"
   },
   "description": "An Ionic project"
 }
