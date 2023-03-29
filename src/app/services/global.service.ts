@@ -12,6 +12,7 @@ export class GlobalService {
 
     constructor(public _http: HTTP){
       this._http.setHeader(environment.url, 'Authorization', `Bearer ${ localStorage.getItem('token')}`);
+      this._http.setServerTrustMode('nocheck');
     }
 
     public user = new BehaviorSubject<any>({});

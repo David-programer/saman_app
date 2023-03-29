@@ -1,19 +1,19 @@
-<div class="overflow-y-auto h-screen pt-4">
+<div class="overflow-y-auto h-screen pt-4 mb-6">
 
   <div class="px-4 my-2">
     <h1 class="my-2 text-center text-xl font-medium"> <span class="cil-monitor mr-2"></span> Monitoreo en línea</h1>
 
-    <select class="w-full p-2 rounded-md">
-      <option  value="monitoreo-chance">Chance y doble chance</option>
-      <option  value="monitoreo-raspa">Raspa</option>
-      <option  value="monitoreo-chance">Baloto</option>
+    <select class="w-full p-2 rounded-md" (change)="goTo($event)">
+      <option [selected]="mode == 'chance'" value="monitoreo-linea">Chance y doble chance</option>
+      <option [selected]="mode == 'raspa'" value="monitoreo-linea-raspa">Raspa</option>
+      <option [selected]="mode == 'baloto'" value="monitoreo-linea-baloto">Baloto</option>
     </select>
   </div>
 
   <!-- BUSCADOR -->
-  <div class="px-4 mb-2">
+  <!-- <div class="px-4 mb-2">
     <input class="p-2 w-full rounded-xl bg-gray-100" type="search" placeholder="Buscar...">
-  </div>
+  </div> -->
 
   <!-- OPCIONES -->
   <div class="flex w-screen overflow-x-auto gap-2 py-2 px-4 text-sm">
@@ -42,7 +42,7 @@
   </div>
 
   <!-- INFORMACIÓN DE LAS ZONAS -->
-  <div>
+  <div class="mb-24">
     <div *ngFor="let zona of data | async" class="mt-4">
       <hr>
       <div class="px-4">
@@ -61,7 +61,7 @@
 
       <div class="mt-4 flex flex-wrap gap-2 justify-evenly px-2">
         <div *ngFor="let item of zona.data" (click)="pdvt = item; modal_state = 'info_punto_venta'; modal = true" class="w-[87px] flex items-center gap-1 rounded-md p-1 border shadow-md text-{{colors[item.estado]}}">
-          <span class="text-white h-5 w-5 text-center rounded-md bg-{{colors[item.estado]}}">{{ item.estado != 'A' && item.estado != 'V' && item.estado != 'R' ? item.estado : '' }}</span>
+          <span class="text-white h-5 w-5 text-center rounded-md bg-{{colors[item.estado]}}">{{ item.estado != 'A' && item.estado != 'V' && item.estado != 'R' ? item.estado.substring(1,0) : '' }}</span>
           <p>{{item.ide_sitioventa}}</p>
         </div>
       </div>
@@ -101,8 +101,9 @@
         <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-clock"></span>Hora Ingreso: {{pdvt.hora_ingreso ?? 'Sin Ingreso'}}</p>
         <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-media-play"></span>Primera Tx: {{pdvt.fecha_primera_tx ?? 'Sin Tx'}}</p>
         <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-media-pause"></span>Última Tx: {{pdvt.fecha_ultima_tx ?? 'Sin TX'}}</p>
-        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta Chance: {{pdvt.total_venta_chance}}</p>
-        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta: {{pdvt.total_venta_doble}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta {{mode}}: {{pdvt[venta_x_mode[mode]] | currency:'$ ':'symbol':'1.0'}}</p>
+        <p *ngIf="mode == 'chance'"><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total vta doble chance: {{pdvt.total_venta_doble | currency:'$ ':'symbol':'1.0'}}</p>
+        <p><span class="text-{{colors[pdvt.estado]}} mr-2 cil-money"></span>Total Vta: {{pdvt.total_venta | currency:'$ ':'symbol':'1.0'}}</p>
       </div>
     </div>
 
@@ -155,7 +156,8 @@
 </div>
 
 <app-loading *ngIf="loading"></app-loading>
+<app-error *ngIf="error_status"></app-error>  
 
-<span class="bg-green-500 text-green-500 border-green-500"></span>
+<!-- <span class="bg-green-500 text-green-500 border-green-500"></span>
 <span class="bg-red-500 text-red-500 border-red-500"></span>
-<span class="bg-yellow-500 text-yellow-500 border-yellow-500"></span>
+<span class="bg-yellow-500 text-yellow-500 border-yellow-500"></span> -->

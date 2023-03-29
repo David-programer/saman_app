@@ -1,5 +1,4 @@
 <div class="max-w-2xl mx-auto">
-
 	<!-- HEADER -->
 	<header class="flex h-14 w-screen p-4">
 		<span class="cil-menu text-3xl" (click)="menuState = !menuState"></span>
@@ -9,8 +8,8 @@
 
 	<!-- SIDEBAR -->
 	<aside [ngClass]="menuState ? 'ml-0 bg-black bg-opacity-40' : 'ml-[-100%]'" (click)="menuState = false" class="w-full absolute transition-[margin] duration-[400ms]" aria-label="Sidebar">
-		<div (click)="$event.stopPropagation()" class="w-[17rem] px-3 py-4 overflow-y-auto bg-gray-800 h-screen text-gray-400">
-			<ul class="space-y-2 select-none">
+		<div (click)="$event.stopPropagation()" class="w-[17rem] px-3 py-4 h-[calc(100vh-56px)] flex flex-col bg-gray-800 text-gray-400">
+			<ul class="space-y-2 select-none overflow-y-auto">
 				<li *ngFor="let module of menu | async">
 					<button type="button" class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-700 hover:text-white" (click)="listItems.hidden = !listItems.hidden">
 						<span class="w-6 h-6 transition duration-75 " [ngClass]="module.icon"></span>
@@ -29,6 +28,12 @@
 					</ul>
 				</li>
 			</ul>
+			<div class="mt-auto justify-self-end border-t border-t-zinc-500">
+				<button type="button" class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-700 hover:text-white" (click)="logout()">
+					<span class="w-6 h-6 transition duration-75 " ngClass="cil-input"></span>
+					<span class="flex-1 ml-3 text-left whitespace-nowrap">Cerrar Sesión</span>
+				</button>
+			</div>
 		</div>
 	</aside>
 
@@ -37,4 +42,8 @@
 		<router-outlet></router-outlet>
 	</main>
 
+	<!-- FOOTER -->
+	<!-- <footer class="bg-slate-100 text-black grid place-content-center p-2">
+		SAMAN
+	</footer> -->
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { GlobalService } from 'src/app/services/global.service';
 import { MonitoreoChanceUtil, MonitoreoChanceInterface } from 'src/app/utils/monitoreo-chanche.util';
@@ -10,9 +11,10 @@ import { MonitoreoChanceUtil, MonitoreoChanceInterface } from 'src/app/utils/mon
 })
 export class MonitoreoChanceComponent implements OnInit {
 
-  constructor(public _monitoreoChanceUtil: MonitoreoChanceUtil, private _globalService: GlobalService) { }
+  constructor(private router: Router, public _monitoreoChanceUtil: MonitoreoChanceUtil, private _globalService: GlobalService) { }
 
   public pdvt:any = {};
+  public mode:string = '';
   public tipos:any[] = [];
   public estados:any[] = [];
   public copy_data:any[] = [];
@@ -24,14 +26,16 @@ export class MonitoreoChanceComponent implements OnInit {
   public modal_state:string = '';
   public hora_consulta:string = '';
   public municipios_x_zona:any = {};
+  public error_status:boolean = false;
   public rentabilidad_x_zona:any = {};
   public municipios_selected:any = {};
   public data = new BehaviorSubject<any>([]);
   public totales:any = {pdvt: 0, rentabilidad: 0};
   public estados_order:any = {'V': 4, 'R': 2, 'A': 3, 'N': 1, 'NX': 6, 'NN': 7, 'N5': 8};
+  public venta_x_mode:any = {'raspa': 'total_venta_raspa', 'chance': 'total_venta_chance', 'baloto' : 'total_venta_baloto'};
   public colors:any = {'V': 'green-500', 'R': 'red-500', 'A': 'yellow-500', 'N': 'black', 'NX': 'black', 'NN': 'black', 'N5': 'black'};
 
-  public filter_by(value:string, isActive:boolean, type:string){
+  public filter_by(value:string, isActive:boolean, type:string):void{
     if(type == 'estado') isActive ? this.estados_test.splice(this.estados_test.indexOf(value), 1) : this.estados_test.push(value);
     else if(type == 'tipo') isActive ? this.tipos_test.splice(this.tipos_test.indexOf(value), 1) : this.tipos_test.push(value) 
 
@@ -48,19 +52,26 @@ export class MonitoreoChanceComponent implements OnInit {
     );
   }
 
-  public hidden_modal(element:any){
+  public hidden_modal(element:any):void{
     element.classList.add('modal_hidden');
     setTimeout(() => { this.modal = false}, 400);
   }
 
+  public goTo(route:any):void{
+    this.router.navigate([`/${route.target.value}`]);
+  }
+
   ngOnInit() {
     this.hora_consulta = new Date().toLocaleTimeString();
-
+    let routes:any = {'/monitoreo-linea': 'chance', '/monitoreo-linea-raspa': 'raspa', '/monitoreo-linea-baloto': 'baloto'}
+    this.mode = routes[this.router.url];
     let num_identificacion = JSON.parse(`${localStorage.getItem('identity')}`).cedula;
-    this._globalService.postRequest('movil/comercial/getmonitoreoenlineaMovil', { num_identificacion, "tabla": "chance" })
+
+
+    this._globalService.postRequest('movil/comercial/getmonitoreoenlineaMovil', { num_identificacion, "tabla": this.mode })
     .then((response:any)=>{
       if(response.data.successful){
-        console.log(response);
+        console.log(response.data)
         let data = response.data.data;
         let zonas:any = {};
     
@@ -74,7 +85,6 @@ export class MonitoreoChanceComponent implements OnInit {
     
         const new_data = Object.entries(zonas).map(([key, item]: [string, any])=> {this.cantidad_x_zona[key] = item.length ; return {nom_zona: key, data: item}});
     
-        this.data.next(new_data);
         this.copy_data = new_data;
     
         data.map((item:any) =>{ 
@@ -85,14 +95,13 @@ export class MonitoreoChanceComponent implements OnInit {
     
         this.tipos = Object.values(this.tipos).map((item:any) => {return item});
         this.estados = Object.values(this.estados).map((item:any) => {item.porcentaje = item.cantidad / data.length * 100 ;return item});
+        this.data.next(new_data);
       }
       this.loading = false;
     }).catch((error)=>{
       this.loading = false;
+      this.error_status = true;
     });
-    
-    // let data:any = localStorage.getItem('data');
-    // data = JSON.parse(data);
     
     this.data.subscribe((value: MonitoreoChanceInterface[]) => {
       let tipos: any = {};

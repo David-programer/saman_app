@@ -32,7 +32,8 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('identity', JSON.stringify(res.data.usuario));
       this.router.navigate(['home']);
     }).catch(async (e:any)=>{    
-      await this.open_alert(JSON.parse(e.error)?.message);
+      console.log(e)
+      // await this.open_alert(JSON.parse(e.error)?.message);
     })
   }
 

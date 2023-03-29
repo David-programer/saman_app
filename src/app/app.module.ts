@@ -15,10 +15,12 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LoginComponent } from './views/login/login.component';
 import { LayoutComponent } from './containers/layout/layout.component';
 import { MonitoreoChanceComponent } from './views/monitoreo-chance/monitoreo-chance.component';
+import { ErrorComponent } from './views/error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ErrorComponent,
     LoginComponent,
     LayoutComponent,
     LoadingComponent,

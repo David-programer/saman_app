@@ -12,9 +12,9 @@ npx cap open android
 
 ### Debug Android con dispositivo móvil
 <!-- ionic capacitor run android -->
-ionic capacitor run android --livereload --host 192.168.1.3
+ionic capacitor run android --livereload --host 192.168.118.200
 
-Para esto, me tocó instalar java y configurar en las variables de entorno ("JAVA_HOME")
+Instalar java y configurar en las variables de entorno ("JAVA_HOME")
 Igualmente en el dispositivo, configurar el modo desarrollador, para permitir debuguear aplicaciones e instalarlas por medio del USB.
 
 ### Abrir DevTools en el navegador

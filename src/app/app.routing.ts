@@ -13,7 +13,7 @@ import { LoginComponent } from './views/login/login.component';
 import { IdentityGuard } from './services/identity.guard';
 import { MonitoreoChanceComponent } from './views/monitoreo-chance/monitoreo-chance.component';
 import { HomeComponent } from './views/home/home.component';
-import { ErrorComponent } from './components/error/error.component';
+import { ErrorComponent } from './views/error/error.component';
 
 // Components
 // import { DashboardComponent } from './views/dashboard/dashboard.component';
@@ -27,7 +27,9 @@ export const routes: Routes = [
   // { path: 'register', component: RegisterComponent, canActivate: [IdentityGuard], data: { title: 'Register Page' } },
   { path: '', component: LayoutComponent, canActivate: [IdentityGuard], data: { title: '' }, 
   children: [
-    { path: 'monitoreo-linea', component: MonitoreoChanceComponent },
+    { path: 'monitoreo-linea', component: MonitoreoChanceComponent},
+    { path: 'monitoreo-linea-raspa', component: MonitoreoChanceComponent },
+    { path: 'monitoreo-linea-baloto', component: MonitoreoChanceComponent },
     { path: 'home', component: HomeComponent },
       // { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' } },
   ]},
